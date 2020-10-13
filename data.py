@@ -78,5 +78,3 @@ with pd.ExcelWriter(filename) as writer:
     stock_ret.to_excel(writer, sheet_name="stock_ret")
     stock_cov.to_excel(writer, sheet_name="stock_cov")
     stock_corr.to_excel(writer, sheet_name="stock_corr")
-
-# %%
