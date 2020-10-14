@@ -1,7 +1,7 @@
 import numpy as np
 import cvxpy as cp
-import pandas as pd
 from scipy.optimize import minimize
+from mlfinlab.portfolio_optimization.hrp import HierarchicalRiskParity
 
 
 def MiniVar(V, n, benchmark_weight, maximum_deviation):
@@ -44,7 +44,9 @@ def RiskParity(V, n, benchmark_weight, maximum_deviation):
     return res.x
 
 
-def MaxDiverse(V, sigma, n, benchmark_weight, maximum_deviation):
+def MaxDiverse(V, n, benchmark_weight, maximum_deviation):
+    sigma = np.sqrt(np.diag(V))
+
     def objfun(x):
         return -sigma.T.dot(x) / np.sqrt(x.T.dot(V).dot(x))
 
@@ -63,3 +65,12 @@ def MaxDiverse(V, sigma, n, benchmark_weight, maximum_deviation):
     )
 
     return res.x
+
+
+def HRP(price_df, weight=None):
+    if weight is None:
+        weight = np.ones(price_df.shape[1])
+    hrp = HierarchicalRiskParity()
+    hrp.allocate(asset_prices=price_df, side_weights=weight)
+    hrp_weights = hrp.weights.sort_values(by=0, ascending=False, axis=1)
+    return hrp_weights

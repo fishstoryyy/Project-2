@@ -199,3 +199,4 @@ $RECYCLE.BIN/
 
 .DS_Store
 output/~$data.xlsx
+.vscode/settings.json
