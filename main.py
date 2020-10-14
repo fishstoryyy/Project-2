@@ -1,25 +1,30 @@
 # %%
 import numpy as np
 import cvxpy as cp
+import pandas as pd
 from scipy.optimize import minimize
 
 # %%
+import numpy as np
+from scipy.stats import random_correlation
 
-mu = 0.01 * np.array([0.27, 0.25, 0.39, 0.88, 0.53, 0.88, 0.79, 0.71])
-sigma = 0.01 * np.array([1.56, 2.01, 5.50, 7.03, 6.22, 7.04, 6.01, 4.30])
-correl = np.array(
-    [
-        [1.00, 0.92, 0.33, 0.26, 0.28, 0.16, 0.29, 0.42],
-        [0.92, 1.00, 0.26, 0.22, 0.27, 0.14, 0.25, 0.36],
-        [0.33, 0.26, 1.00, 0.41, 0.30, 0.25, 0.58, 0.71],
-        [0.26, 0.22, 0.41, 1.00, 0.62, 0.42, 0.54, 0.44],
-        [0.28, 0.27, 0.30, 0.62, 1.00, 0.35, 0.48, 0.34],
-        [0.16, 0.14, 0.25, 0.42, 0.35, 1.00, 0.40, 0.22],
-        [0.29, 0.25, 0.58, 0.54, 0.48, 0.40, 1.00, 0.56],
-        [0.42, 0.36, 0.71, 0.44, 0.34, 0.22, 0.56, 1.00],
-    ]
+# %%
+# specify eigenvalues
+eig_v = np.random.rand(10)
+eig_v[-1] = eig_v.shape[0] - np.sum(eig_v[:-1])
+
+np.random.seed(0)
+mean_true = np.random.uniform(0, 0.15, 10)
+std_true = np.random.uniform(0.15, 0.5, 10).reshape(-1, 1)
+corr_true = random_correlation.rvs(eig_v)
+cov_true = std_true @ std_true.T @ corr_true
+
+
+# %%
+mu = pd.read_excel(
+    "\output\data.xlsx",
 )
-V = np.outer(sigma, sigma) * correl
+pd.r
 n = len(mu)
 benchmark_weight = np.ones(n) / n
 maximum_deviation = 1
