@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 import cvxpy as cp
 from scipy.optimize import minimize
@@ -20,6 +21,9 @@ def MiniVar(V, n, benchmark_weight, maximum_deviation):
 
 
 def RiskParity(V, n, benchmark_weight, maximum_deviation):
+    if isinstance(V, pd.DataFrame):
+        V = V.values
+
     def objfun(x):
         tmp = (V * np.matrix(x).T).A1
         risk = x * tmp
@@ -40,7 +44,7 @@ def RiskParity(V, n, benchmark_weight, maximum_deviation):
     res = minimize(
         objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
     )
-
+    print(res.success)
     return res.x
 
 
@@ -63,7 +67,7 @@ def MaxDiverse(V, n, benchmark_weight, maximum_deviation):
     res = minimize(
         objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
     )
-
+    print(res.success)
     return res.x
 
 
@@ -73,4 +77,4 @@ def HRP(price_df, weight=None):
     hrp = HierarchicalRiskParity()
     hrp.allocate(asset_prices=price_df, side_weights=weight)
     hrp_weights = hrp.weights.sort_values(by=0, ascending=False, axis=1)
-    return hrp_weights
+    return hrp_weights.sum()

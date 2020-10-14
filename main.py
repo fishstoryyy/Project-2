@@ -3,20 +3,22 @@ import numpy as np
 import pandas as pd
 import optmodels
 from scipy.stats import random_correlation
+import matplotlib.pyplot as plt
 
 
 # %%
 # specify eigenvalues
 
 num_fake_stocks = 10
-eig_v = np.random.rand(num_fake_stocks)
+# eig_v = np.random.rand(num_fake_stocks)
+eig_v = np.random.uniform(0.5, 1, num_fake_stocks)
 eig_v[-1] = eig_v.shape[0] - np.sum(eig_v[:-1])
 
-np.random.seed(0)
+np.random.seed(666)
 mean_true = np.random.uniform(0, 0.15, num_fake_stocks)
 std_true = np.random.uniform(0.15, 0.5, num_fake_stocks).reshape(-1, 1)
 corr_true = random_correlation.rvs(eig_v)
-cov_true = std_true @ std_true.T @ corr_true
+cov_true = np.outer(std_true, std_true) * corr_true
 
 benchmark_weight_fake = np.ones(num_fake_stocks) / num_fake_stocks
 maximum_deviation_fake = 1
@@ -52,6 +54,16 @@ MaxDiverse_weight_fake = optmodels.MaxDiverse(
     cov_true, num_fake_stocks, benchmark_weight_fake, maximum_deviation_fake
 )
 
+print("fake data results:")
+print("MiniVar")
+print(MiniVar_weight_fake)
+print()
+print("RiskParity")
+print(RiskParity_weight_fake)
+print()
+print("MaxDiverse")
+print(MaxDiverse_weight_fake)
+
 
 # %%
 # actual data
@@ -73,3 +85,33 @@ MaxDiverse_weight = optmodels.MaxDiverse(
 
 # HRP
 HRP_weight = optmodels.HRP(price_table)
+# %%
+print()
+print("actual data results:")
+print("MiniVar")
+print(MiniVar_weight)
+print()
+print("RiskParity")
+print(RiskParity_weight)
+print()
+print("MaxDiverse")
+print(MaxDiverse_weight)
+print()
+print("HRP")
+print(HRP_weight)
+
+# %%
+result = pd.DataFrame(
+    [MiniVar_weight, RiskParity_weight, MaxDiverse_weight],
+    columns=price_table.columns,
+    index=["MiniVar", "RiskParity", "MaxDiverse"],
+).T
+
+result["HRP"] = HRP_weight
+result.plot.barh(stacked=True, figsize=(10, 10))
+plt.show()
+
+result.plot.pie(subplots=True, figsize=(30, 5), legend=False)
+plt.show()
+
+# %%
