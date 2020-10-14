@@ -22,73 +22,21 @@ cov_true = std_true @ std_true.T @ corr_true
 
 # %%
 mu = pd.read_excel(
-    "\output\data.xlsx",
+    "./output/data.xlsx",
+    sheet_name="stock_ret",
+    index_col=0,
+    header=0,
+).mean(axis=0)
+
+V = pd.read_excel(
+    "./output/data.xlsx",
+    sheet_name="stock_cov",
+    index_col=0,
+    header=0,
 )
-pd.r
+
+sigma = np.sqrt(np.diag(V))
+
 n = len(mu)
 benchmark_weight = np.ones(n) / n
 maximum_deviation = 1
-
-# %%
-# Minimum-variance portfolio
-x = cp.Variable(n)
-prob = cp.Problem(
-    cp.Minimize(cp.quad_form(x, V)),
-    [
-        x - benchmark_weight <= maximum_deviation,
-        benchmark_weight - x <= maximum_deviation,
-        np.ones(n) @ x == 1,
-        x >= 0,
-    ],
-)
-prob.solve(solver=cp.GUROBI)
-print(x.value)
-# %%
-# Risk-parity portfolio
-def objfun(x):
-    tmp = (V * np.matrix(x).T).A1
-    risk = x * tmp
-    var = sum(risk)
-    delta_risk = np.sum((risk - var / n) ** 2)
-    return delta_risk
-
-
-x0 = benchmark_weight
-bnds = tuple((0, None) for x in x0)
-cons = (
-    {"type": "eq", "fun": lambda x: sum(x) - 1},
-    {"type": "ineq", "fun": lambda x: x - benchmark_weight + maximum_deviation},
-    {"type": "ineq", "fun": lambda x: benchmark_weight - x + maximum_deviation},
-)
-options = {"disp": False, "maxiter": 1000, "ftol": 1e-20}
-
-# Optimization
-res = minimize(
-    objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
-)
-print(res)
-
-# %%
-# Maximum-diversification portfolio
-def objfun(x):
-    return -sigma.T.dot(x) / np.sqrt(x.T.dot(V).dot(x))
-
-
-x0 = benchmark_weight
-bnds = tuple((0, None) for x in x0)
-cons = (
-    {"type": "eq", "fun": lambda x: sum(x) - 1},
-    {"type": "ineq", "fun": lambda x: x - benchmark_weight + maximum_deviation},
-    {"type": "ineq", "fun": lambda x: benchmark_weight - x + maximum_deviation},
-)
-options = {"disp": False, "maxiter": 1000, "ftol": 1e-20}
-
-# Optimization
-res = minimize(
-    objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
-)
-print(res)
-
-
-# %%
-# Hierarchical risk-parity

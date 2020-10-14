@@ -3,6 +3,7 @@ import cvxpy as cp
 import pandas as pd
 from scipy.optimize import minimize
 
+
 def MiniVar(V, n, benchmark_weight, maximum_deviation):
     x = cp.Variable(n)
     prob = cp.Problem(
@@ -18,7 +19,7 @@ def MiniVar(V, n, benchmark_weight, maximum_deviation):
     return x.value
 
 
-def RiskParity(V, n, benchmark_weight, maximum_deviation)
+def RiskParity(V, n, benchmark_weight, maximum_deviation):
     def objfun(x):
         tmp = (V * np.matrix(x).T).A1
         risk = x * tmp
@@ -39,10 +40,11 @@ def RiskParity(V, n, benchmark_weight, maximum_deviation)
     res = minimize(
         objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
     )
-        return res.x
+
+    return res.x
 
 
-def MaxDiverse(V, sigma, n, benchmark_weight, maximum_deviation)
+def MaxDiverse(V, sigma, n, benchmark_weight, maximum_deviation):
     def objfun(x):
         return -sigma.T.dot(x) / np.sqrt(x.T.dot(V).dot(x))
 
@@ -59,4 +61,5 @@ def MaxDiverse(V, sigma, n, benchmark_weight, maximum_deviation)
     res = minimize(
         objfun, x0, bounds=bnds, constraints=cons, method="SLSQP", options=options
     )
+
     return res.x
