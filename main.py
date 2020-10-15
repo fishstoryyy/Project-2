@@ -136,7 +136,7 @@ MaxDiverse_returns = np.sum(MaxDiverse_weight*mean_actual)
 HRP_returns = np.sum(HRP_weight*mean_actual)
 
 print()
-print("Expected return for artificial data:")
+print("Expected return for actual data:")
 print()
 print("Benchmark")
 print(Benchmark_returns)
