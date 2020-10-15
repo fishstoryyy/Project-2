@@ -15,4 +15,10 @@ After cloning the repo,
 
 4. From terminal, install required packages:
 
-`pip install -r path\requirements.txt`
+`pip install Cython`
+
+`pip install mlfinlab`
+
+4. From terminal, install required solver:
+
+`conda install gurobi`
