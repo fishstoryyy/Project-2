@@ -64,6 +64,32 @@ print()
 print("MaxDiverse")
 print(MaxDiverse_weight_fake)
 
+# %%
+# Performance analysis
+Benchmark_returns_fake = np.sum(benchmark_weight_fake*mean_true)
+MiniVar_returns_fake = np.sum(MiniVar_weight_fake*mean_true)
+RiskParity_returns_fake = np.sum(RiskParity_weight_fake*mean_true)
+MaxDiverse_returns_fake = np.sum(MaxDiverse_weight_fake*mean_true)
+print()
+print("Expected return for artificial data:")
+print()
+print("Benchmark")
+print(Benchmark_returns_fake)
+print()
+print("MiniVar")
+print(MiniVar_returns_fake)
+print()
+print("RiskParity")
+print(RiskParity_returns_fake)
+print()
+print("MaxDiverse") 
+print(MaxDiverse_returns_fake)
+
+ind = np.arange(4)
+plt.bar(ind, [Benchmark_returns_fake, RiskParity_returns_fake, MiniVar_returns_fake, MaxDiverse_returns_fake])
+plt.ylabel('Expected Returns')
+plt.xticks(ind, ('Benchmark', 'MiniVar', 'RiskParity', 'MaxDiverse'))
+plt.show()
 
 # %%
 # actual data
@@ -101,6 +127,39 @@ print("HRP")
 print(HRP_weight)
 
 # %%
+# Performance analysis
+mean_actual = np.mean(ret_table, axis=0)
+Benchmark_returns = np.sum(benchmark_weight*mean_actual)
+MiniVar_returns = np.sum(MiniVar_weight*mean_actual)
+RiskParity_returns = np.sum(RiskParity_weight*mean_actual)
+MaxDiverse_returns = np.sum(MaxDiverse_weight*mean_actual)
+HRP_returns = np.sum(HRP_weight*mean_actual)
+
+print()
+print("Expected return for artificial data:")
+print()
+print("Benchmark")
+print(Benchmark_returns)
+print()
+print("MiniVar")
+print(MiniVar_returns)
+print()
+print("RiskParity")
+print(RiskParity_returns)
+print()
+print("MaxDiverse")
+print(MaxDiverse_returns)
+print()
+print("HRP")
+print(HRP_returns)
+
+ind = np.arange(5)
+plt.bar(ind, [Benchmark_returns, RiskParity_returns, MiniVar_returns, MaxDiverse_returns, HRP_returns])
+plt.ylabel('Expected Returns')
+plt.xticks(ind, ('Benchmark', 'MiniVar', 'RiskParity', 'MaxDiverse', 'HRP'))
+plt.show()
+
+# %%
 result = pd.DataFrame(
     [MiniVar_weight, RiskParity_weight, MaxDiverse_weight],
     columns=price_table.columns,
@@ -113,5 +172,3 @@ plt.show()
 
 result.plot.pie(subplots=True, figsize=(30, 5), legend=False)
 plt.show()
-
-# %%
