@@ -1,7 +1,7 @@
 # Project-2
 
-
 ## Installation
+
 After cloning the repo,
 
 1. Launch an anaconda terminal
@@ -17,8 +17,8 @@ After cloning the repo,
 
 `pip install Cython`
 
-`pip install mlfinlab`
+`pip install mlfinlab seaborn yfinance`
 
-4. From terminal, install required solver:
+4. From terminal, install required solver to the new conda environment opt-project2:
 
 `conda install gurobi`
