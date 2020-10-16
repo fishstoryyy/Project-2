@@ -71,10 +71,11 @@ def MaxDiverse(V, n, benchmark_weight, maximum_deviation):
     return res.x
 
 
-def HRP(price_df, weight=None):
+def HRP(price_df, weight=None, link="ward"):
     if weight is None:
         weight = np.ones(price_df.shape[1])
     hrp = HierarchicalRiskParity()
-    hrp.allocate(asset_prices=price_df, side_weights=weight)
+    hrp.allocate(asset_prices=price_df, side_weights=weight, linkage=link)
     hrp_weights = hrp.weights.sort_values(by=0, ascending=False, axis=1)
+    hrp.plot_clusters(price_df.columns)
     return hrp_weights.sum()
